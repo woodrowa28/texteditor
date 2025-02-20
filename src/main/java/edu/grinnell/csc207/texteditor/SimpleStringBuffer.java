@@ -45,29 +45,61 @@ public class SimpleStringBuffer {
             index--;
         }
     }
-
+    
+    /**
+     * Returns the position of the cursor in the buffer
+     * @return cursor index
+     */
     public int getCursorPosition() {
-        throw new UnsupportedOperationException("Unimplemented method 'getCursorPosition'");
+        return index;
     }
-
+    
+    /**
+     * Moves the cursor one position to the left unless already at start
+     */
     public void moveLeft() {
-        throw new UnsupportedOperationException("Unimplemented method 'moveLeft'");
+        if (index != 0) {
+            index--;
+        }
     }
 
+    /**
+     * Moves the cursor one position to the right unless already at end
+     */
     public void moveRight() {
-        throw new UnsupportedOperationException("Unimplemented method 'moveRight'");
+        if (index != buffer.length()) {
+            index++;
+        }
     }
 
+    /**
+     * Gets the size (number of chars) in the buffer
+     * @return length of buffer
+     */
     public int getSize() {
-        throw new UnsupportedOperationException("Unimplemented method 'getSize'");
+        return buffer.length();
+    }
+    
+    /**
+     * Gets the character at index i of the buffer, if it exists
+     * @param i index to retrieve
+     * @return character at index
+     * @throws IndexOutOfBoundsException if i is not a valid index
+     */
+    public char getChar(int i) throws IndexOutOfBoundsException {
+        if (i < 0 || i >= buffer.length()) {
+            throw new IndexOutOfBoundsException("Not a valid index.");
+        } else {
+            return buffer.charAt(i);
+        }
     }
 
-    public char getChar(int i) {
-        throw new UnsupportedOperationException("Unimplemented method 'getChar'");
-    }
-
+    /**
+     * Provides a string representation of the object
+     * @return String that buffer contains
+     */
     @Override
     public String toString() {
-        throw new UnsupportedOperationException("Unimplemented method 'toString'");
+        return buffer;
     }
 }
