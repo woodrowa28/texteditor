@@ -17,19 +17,17 @@ public class TextEditor {
      * @throws IOException upon terminal screen failure
      */
     public static void main(String[] args) throws Exception {
-        /*if (args.length != 1) {
+        if (args.length != 1) {
             System.err.println("Usage: java TextEditor <filename>");
             System.exit(1);
         }
 
         // TODO: fill me in with a text editor TUI!
         String path = args[0];
-        System.out.format("Loading %s...\n", path);*/
+        System.out.format("Loading %s...\n", path);
         
-        /*Screen screen = new DefaultTerminalFactory().createScreen();
+        Screen screen = new DefaultTerminalFactory().createScreen();
         screen.startScreen();
-        screen.setCharacter(0,0,TextCharacter.fromCharacter('a')[0]);
-        Thread.sleep(5000);
-        screen.refresh();*/
+        screen.stopScreen();
     }
 }
