@@ -30,6 +30,7 @@ public class SimpleStringBuffer {
         } else {
             buffer = buffer.substring(0, index) + ch + buffer.substring(index);
         }
+        index++;
     }
 
     /**
