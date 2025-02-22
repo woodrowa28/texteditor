@@ -6,7 +6,7 @@ package edu.grinnell.csc207.texteditor;
  */
 public class GapBuffer {
     
-    private int[] buffer;
+    private char[] buffer;
     
     private int gapStartIndex;
     
@@ -15,20 +15,20 @@ public class GapBuffer {
     private static final int INITIAL_SIZE = 10;
     
     public GapBuffer() {
-        buffer = new int[INITIAL_SIZE];
+        buffer = new char[INITIAL_SIZE];
         gapStartIndex = 0;
         textStartIndex = INITIAL_SIZE;
     }
     
     public void insert(char ch) {
-        if(gapStartIndex==textStartIndex) {
+        if (gapStartIndex==textStartIndex) {
             expandBuffer();
         }
         buffer[gapStartIndex++] = ch;
     }
     
     private void expandBuffer() {
-        int[] bigger = new int[buffer.length * 2];
+        char[] bigger = new char[buffer.length * 2];
         int index;
         for (index = 0; index <= gapStartIndex; index++) {
             bigger[index] = buffer[index];
@@ -48,26 +48,40 @@ public class GapBuffer {
     }
 
     public int getCursorPosition() {
-        throw new UnsupportedOperationException("Unimplemented method 'getCursorPosition'");
+        return gapStartIndex;
     }
 
     public void moveLeft() {
-        throw new UnsupportedOperationException("Unimplemented method 'moveLeft'");
+        if (gapStartIndex != 0) {
+            buffer[--textStartIndex] = buffer[--gapStartIndex];
+        }
     }
 
     public void moveRight() {
-        throw new UnsupportedOperationException("Unimplemented method 'moveRight'");
+        if (textStartIndex != buffer.length) {
+            buffer[gapStartIndex++] = buffer[textStartIndex++];
+        }
     }
 
     public int getSize() {
-        throw new UnsupportedOperationException("Unimplemented method 'getSize'");
+        return buffer.length - (textStartIndex - gapStartIndex);
     }
 
     public char getChar(int i) {
-        throw new UnsupportedOperationException("Unimplemented method 'getChar'");
+        if (i < gapStartIndex) {
+            return buffer[i];
+        } else {
+            return buffer[i + (textStartIndex - gapStartIndex)];
+        }
     }
 
+    @Override
     public String toString() {
-        throw new UnsupportedOperationException("Unimplemented method 'toString'");
+        String ret = "";
+        for (int i = 0; i < buffer.length; i++) {
+            if (i < gapStartIndex || i >= textStartIndex);
+            ret += buffer[i];
+        }
+        return ret;
     }
 }
