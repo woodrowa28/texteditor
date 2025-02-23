@@ -1,12 +1,16 @@
 
 package edu.grinnell.csc207.texteditor;
 
+import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.screen.Screen;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * The driver for the TextEditor Application.
@@ -24,41 +28,54 @@ public class TextEditor {
             System.exit(1);
         }
 
-        // TODO: fill me in with a text editor TUI!
         String path = args[0];
-        System.out.format("Loading %s...\n", path);
-        
+        Path input = Paths.get(path);
         GapBuffer buffer = new GapBuffer();
-        Screen screen = new DefaultTerminalFactory().createScreen();
-        screen.startScreen();
-        boolean stillRunning = true;
-        while(stillRunning) {
-            KeyStroke stroke = screen.readInput();
-            KeyType type = stroke.getKeyType();
-            switch (type) {
-                case Character:
-                    char ch = stroke.getCharacter();
-                    buffer.insert(ch);
-                    break;
-                case ArrowLeft:
-                    buffer.moveLeft();
-                    break;
-                case ArrowRight:
-                    buffer.moveRight();
-                    break;
-                case Backspace:
-                    buffer.delete();
-                    break;
-                case Escape:
-                    stillRunning = false;
-                    break;
-            }
-            drawBuffer(buffer, screen);
+        if (Files.exists(input) && Files.isRegularFile(input)) {
+            fillBuffer(buffer, Files.readString(input));
         }
+        
+        System.out.format("Loading %s...\n", path);
+        Screen screen = new DefaultTerminalFactory().createScreen();
+        runLoop(buffer, screen, input);
         screen.stopScreen();
     }
     
-    public static void drawBuffer(GapBuffer buf, Screen screen) {
-        
+    public static void fillBuffer(GapBuffer buffer, String input) {
+        for (int i = 0; i < input.length(); i++) {
+            buffer.insert(input.charAt(i));
+        }
+    }
+    
+    public static void runLoop(GapBuffer buffer, Screen screen, Path input) throws IOException {
+        screen.startScreen();
+        boolean stillRunning = true;
+        while (stillRunning) {
+            KeyStroke stroke = screen.readInput();
+            KeyType type = stroke.getKeyType();
+            if (type.equals(KeyType.Character)) {
+                char ch = stroke.getCharacter();
+                buffer.insert(ch);
+            } else if (type.equals(KeyType.ArrowLeft)) {
+                buffer.moveLeft();
+            } else if (type.equals(KeyType.ArrowRight)) {
+                buffer.moveRight();
+            } else if (type.equals(KeyType.Backspace)) {
+                buffer.delete();
+            } else if (type.equals(KeyType.Escape)) {
+                stillRunning = false;
+            }
+            drawBuffer(buffer, screen);
+        }
+    }
+    
+    public static void drawBuffer(GapBuffer buf, Screen screen) throws IOException {
+        TextCharacter currChar;
+        for (int i = 0; i < buf.getSize(); i++) {
+            currChar = TextCharacter.fromCharacter(buf.getChar(i))[0];
+            screen.setCharacter(0, i, currChar);
+        }
+        screen.setCursorPosition(new TerminalPosition(0, buf.getCursorPosition()));
+        screen.refresh();
     }
 }
