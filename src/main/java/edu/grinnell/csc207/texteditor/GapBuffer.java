@@ -29,7 +29,7 @@ public class GapBuffer {
      * @param ch the character to be inserted
      */
     public void insert(char ch) {
-        if (gapStartIndex==textStartIndex) {
+        if (gapStartIndex == textStartIndex) {
             expandBuffer();
         }
         buffer[gapStartIndex++] = ch;
