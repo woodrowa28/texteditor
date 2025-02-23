@@ -7,6 +7,7 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.screen.Screen.RefreshType;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,18 +38,32 @@ public class TextEditor {
         
         System.out.format("Loading %s...\n", path);
         Screen screen = new DefaultTerminalFactory().createScreen();
-        runLoop(buffer, screen, input);
+        runLoop(buffer, screen);
+        Files.writeString(input, buffer.toString());
         screen.stopScreen();
     }
     
+    /**
+     * Inserts the string into the gap buffer one character at a time.
+     * @param buffer the gap buffer data
+     * @param input input string, from the command line file
+     */
     public static void fillBuffer(GapBuffer buffer, String input) {
         for (int i = 0; i < input.length(); i++) {
             buffer.insert(input.charAt(i));
         }
     }
     
-    public static void runLoop(GapBuffer buffer, Screen screen, Path input) throws IOException {
+    /**
+     * Repeatedly takes input from user, performs the desired operation in the gap buffer,
+     * and displays the changes to the screen.
+     * @param buffer gap buffer data
+     * @param screen screen display to present terminal
+     * @throws IOException if an error occurs with screen processing
+     */
+    public static void runLoop(GapBuffer buffer, Screen screen) throws IOException {
         screen.startScreen();
+        drawBuffer(buffer, screen);
         boolean stillRunning = true;
         while (stillRunning) {
             KeyStroke stroke = screen.readInput();
@@ -69,13 +84,20 @@ public class TextEditor {
         }
     }
     
+    /**
+     * Updates the terminal screen by drawing all the new changes to the buffer.
+     * @param buf gap buffer data, where the characters are stored
+     * @param screen terminal display to be copied to
+     * @throws IOException 
+     */
     public static void drawBuffer(GapBuffer buf, Screen screen) throws IOException {
         TextCharacter currChar;
-        for (int i = 0; i < buf.getSize(); i++) {
-            currChar = TextCharacter.fromCharacter(buf.getChar(i))[0];
-            screen.setCharacter(0, i, currChar);
+        String bufString = buf.toString();
+        for (int i = 0; i < bufString.length(); i++) {
+            currChar = TextCharacter.fromCharacter(bufString.charAt(i))[0];
+            screen.setCharacter(i, 0, currChar);
         }
-        screen.setCursorPosition(new TerminalPosition(0, buf.getCursorPosition()));
-        screen.refresh();
+        screen.setCursorPosition(new TerminalPosition(buf.getCursorPosition(), 0));
+        screen.refresh(RefreshType.COMPLETE);
     }
 }
