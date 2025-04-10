@@ -125,12 +125,12 @@ public class GapBuffer {
      */
     @Override
     public String toString() {
-        String ret = "";
+        StringBuilder ret = new StringBuilder();
         for (int i = 0; i < buffer.length; i++) {
             if (i < gapStartIndex || i >= textStartIndex) {
-                ret += buffer[i];
+                ret.append(buffer[i]);
             }
         }
-        return ret;
+        return ret.toString();
     }
 }
