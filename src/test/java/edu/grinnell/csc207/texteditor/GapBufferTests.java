@@ -12,6 +12,19 @@ import net.jqwik.api.constraints.IntRange;
 public class GapBufferTests {
     
     @Test
+    public void deleteTests() {
+        GapBuffer b = new GapBuffer();
+        b.insert('h');
+        b.insert('i');
+        assertEquals("hi", b.toString());
+        b.moveLeft();
+        b.delete();
+        assertEquals("i", b.toString());
+        b.moveRight();
+        b.delete();
+        assertEquals("", b.toString());
+    }
+    @Test
     public void outOfBoundsTests() {
         GapBuffer b = new GapBuffer();
         assertThrows(IndexOutOfBoundsException.class, ()->b.getChar(11));

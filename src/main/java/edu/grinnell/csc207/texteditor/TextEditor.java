@@ -92,12 +92,11 @@ public class TextEditor {
      */
     public static void drawBuffer(GapBuffer buf, Screen screen) throws IOException {
         TextCharacter currChar;
-        String bufString = buf.toString();
-        for (int i = 0; i < bufString.length(); i++) {
-            currChar = TextCharacter.fromCharacter(bufString.charAt(i))[0];
+        for (int i = 0; i < buf.getSize(); i++) {
+            currChar = TextCharacter.fromCharacter(buf.getChar(i))[0];
             screen.setCharacter(i, 0, currChar);
         }
         screen.setCursorPosition(new TerminalPosition(buf.getCursorPosition(), 0));
-        screen.refresh(RefreshType.COMPLETE);
+        screen.refresh();
     }
 }
