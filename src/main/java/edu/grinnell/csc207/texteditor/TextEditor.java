@@ -7,7 +7,6 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.screen.Screen.RefreshType;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -77,6 +76,7 @@ public class TextEditor {
                 buffer.moveRight();
             } else if (type.equals(KeyType.Backspace)) {
                 buffer.delete();
+                screen.clear();
             } else if (type.equals(KeyType.Escape)) {
                 stillRunning = false;
             }
